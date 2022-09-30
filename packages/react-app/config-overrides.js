@@ -2,7 +2,7 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 
 module.exports = function override(config, env) {
-  console.log("override");
+  console.log("override", config);
   let loaders = config.resolve;
   loaders.fallback = {
     crypto: require.resolve("crypto-browserify"),
@@ -25,7 +25,7 @@ module.exports = function override(config, env) {
         loader: "babel-loader",
         // if you include your babel config here,
         // you don’t need the `babel.config.json` file
-        options: { presets: ["@babel/preset-env"] },
+        // options: { presets: ["@babel/preset-env"] },
       },
     },
     ...config.module.rules,
