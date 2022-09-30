@@ -4,7 +4,7 @@
   "homepage": ".",
   "browserslist": {
     "production": [
-      ">0.2%",
+      ">1%",
       "not dead",
       "not op_mini all"
     ],
@@ -92,11 +92,11 @@
     }
   },
   "scripts": {
-    "build": "react-scripts build",
-    "eject": "react-scripts eject",
+    "build": "react-app-rewired build",
+    "eject": "react-app-rewired eject",
     "prestart": "node ./scripts/create_contracts.js",
-    "start": "react-scripts start",
-    "test": "react-scripts test",
+    "start": "react-app-rewired start",
+    "test": "react-app-rewired test",
     "lint": "eslint ./src/**/*.{js,jsx} --ignore-path ./.eslintignore --max-warnings=0",
     "ipfs": "node ./scripts/ipfs.js",
     "surge": "cp build/index.html build/200.html && surge ./build",
