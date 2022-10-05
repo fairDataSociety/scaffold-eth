@@ -75,7 +75,7 @@ export default function FDPLogin({ address, userSigner }) {
           <Input placeholder={username} />
         </Form.Item>
         <Form.Item label="Password" name="password">
-          <Input placeholder={password} />
+          <Input.Password placeholder={password} type="password" />
         </Form.Item>
 
         <Form.Item {...tailFormItemLayout}>
