@@ -10,11 +10,11 @@ ENV REACT_APP_FAIROSHOST=$REACT_APP_FAIROSHOST
 
 WORKDIR /base
 COPY . .
-RUN npm install
+RUN yarn install
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 RUN bash -e -o pipefail -c 'env |grep REACT >> .env'
 
-RUN npm run build
+RUN yarn build
 
 #webserver
 FROM nginx:1.22-alpine
