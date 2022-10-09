@@ -141,6 +141,7 @@ export default function FDPLogin({
 
     if (isLoggedIn !== undefined) setLogin(isLoggedIn);
   }
+  const delay = ms => new Promise(res => setTimeout(res, ms));
   async function fetchPods() {
     notification.info({
       message: "Getting pods",
@@ -152,8 +153,11 @@ export default function FDPLogin({
     var hasPod = podls.pod_name.find(str => str === PODNAME);
     if (hasPod === undefined) {
       await FairOS.podNew(FairOS.fairOShost, PODNAME, user.password);
-      await fetchPods();
-      return;
+      await delay(30000); // wait 10s
+      podls = await (await FairOS.podLs(FairOS.fairOShost, user.password)).json();
+      hasPod = podls.pod_name.find(str => str === PODNAME); // retry to get, not best solution but avoids endless loop
+      //await fetchPods();
+      //return;
     }
 
     setPods(podls);
@@ -181,9 +185,9 @@ export default function FDPLogin({
         message: "'" + podName + "' not found",
         description: "Creating new pod " + podName,
       });
-      await FairOS.podNew(FairOS.fairOShost, podName, user.password);
-      await FairOS.podOpen(FairOS.fairOShost, podName, user.password);
-      await fetchPods();
+      //await FairOS.podNew(FairOS.fairOShost, podName, user.password);
+      //await FairOS.podOpen(FairOS.fairOShost, podName, user.password);
+      //await fetchPods();
     } else {
       notification.success({
         message: podName,
