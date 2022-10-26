@@ -4,6 +4,7 @@ import { SettingOutlined, EditOutlined, EllipsisOutlined, DownloadOutlined, Dele
 import { Transactor } from "../helpers";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
+import { ethers } from "ethers";
 import FDPCalendar from "./FDPCalendar";
 import * as FairOS from "./FairOS.js";
 
@@ -35,6 +36,76 @@ export default function FDPLogin({
   const [numItems, setNumItems] = useState(0);
   const [isBusy, setIsBusy] = useState(false);
   const [form] = Form.useForm();
+
+  // https://docs.ens.domains/dapp-developer-guide/ens-as-nft
+  // iam.alice.eth -> namehash('alice.eth') as the node, and keccak256('iam') as the label.
+  //
+  /*
+      Create a registrar contract as ERC721 compliant
+      Set ENS registry address (mostly when you deploy the registrar)
+      Create register function which calls registry.setSubnodeOwner then mint the token making the subdomain label hash as tokenId
+      contract DCLRegistrar is ERC721Full, Ownable {
+          constructor(
+              IENSRegistry _registry,
+          ) public ERC721Full("DCL Registrar", "DCLENS") {
+              // ENS registry
+              updateRegistry(_registry);
+          }
+
+          function register(
+              string memory _subdomain,
+              bytes32 subdomainLabelHash,
+              address _beneficiary,
+              uint256 _createdDate
+          ) internal {
+              // Create new subdomain and assign the _beneficiary as the owner
+              registry.setSubnodeOwner(domainNameHash, subdomainLabelHash, _beneficiary);
+              // Mint an ERC721 token with the subdomain label hash as its id
+              _mint(_beneficiary, uint256(subdomainLabelHash));
+          }
+      }  
+   */
+
+  // when account exported use this to get private key in hex for import
+  async function getPrivKeyFromSeed(mnemonic) {
+    const bip = require("bip39");
+    const hdkey = require("ethereumjs-wallet/hdkey");
+
+    const seed = await bip.mnemonicToSeed(mnemonic);
+    const hdwallet = hdkey.fromMasterSeed(seed);
+    const wallet_hdpath = "m/44'/60'/0'/0/";
+    const account_index = 0;
+    let fullPath = wallet_hdpath + account_index;
+    const wallet = hdwallet.derivePath(fullPath).getWallet();
+    const privateKey = "0x" + wallet._privKey.toString("hex");
+    // now you can use this private key to import account
+    // console.log("private", privateKey);
+  }
+
+  // this is needed for fairdrop to work
+  async function getPublicKey(signer) {
+    // yarn ganache-cli -p 8545 -d
+    //const provider = new ethers.providers.JsonRpcProvider('http://localhost:8545')
+    //const signer = provider.getSigner();
+    const ethAddress = await signer.getAddress();
+    const hash = await ethers.utils.keccak256(ethAddress);
+    //
+    const message = "Join Resistance";
+    const sig = await signer.signMessage(message);
+    const msgHash = ethers.utils.hashMessage(message);
+    const msgHashBytes = ethers.utils.arrayify(msgHash);
+    // Now you have the digest,
+    const pk = ethers.utils.recoverPublicKey(msgHashBytes, sig);
+    const addr = ethers.utils.recoverAddress(msgHashBytes, sig);
+    console.log("Got PK", pk, addr);
+    // recover address
+    const recoveredAddress = ethers.utils.computeAddress(ethers.utils.arrayify(pk));
+    // Throwing here
+    if (recoveredAddress != ethAddress) {
+      throw Error(`Address recovered do not match, original ${ethAddress} versus computed ${recoveredAddress}`);
+      console.log("error", recoveredAddress, ethAddress);
+    }
+  }
 
   //const tx = Transactor(userSigner);
 
