@@ -407,12 +407,17 @@ export default function FDPLogin({
             <div className={"toolbar"}>
               {podExists === null && (
                 <>
-                  <Button onClick={async () => await createAgendaPod()}>Create {PODNAME}</Button>
+                  <Button onClick={async () => await createAgendaPod()}>
+                    Create&nbsp;<strong>{PODNAME}</strong>
+                  </Button>
                 </>
               )}
               {pod && (
                 <>
-                  <Button onClick={async () => await deletePod(pod)}>Delete {pod}</Button>
+                  <br />
+                  <Button onClick={async () => await deletePod(pod)}>
+                    Delete&nbsp;<strong>{pod}</strong>
+                  </Button>
                 </>
               )}
             </div>
