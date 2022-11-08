@@ -507,7 +507,7 @@ export default function FDPLogin({
         </Form.Item>
 
         <Form.Item {...tailFormItemLayout}>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" style={{ width: "100%", textAlign: "center" }}>
             {"Login"}
           </Button>
         </Form.Item>
