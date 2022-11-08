@@ -491,6 +491,8 @@ export default function FDPLogin({
         </>
       )}
 
+      <h1>Log in Fair Data Society Account</h1>
+
       <Form
         {...formItemLayout}
         form={form}
@@ -498,7 +500,6 @@ export default function FDPLogin({
         onFinish={onFinish}
         initialValues={{ username: "", password: "" }}
       >
-        <h1>Log in Fair Data Society Account</h1>
         <Form.Item label="Username" name="username">
           <Input placeholder={username} />
         </Form.Item>
