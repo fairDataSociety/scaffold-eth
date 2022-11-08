@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { ethers } from "ethers";
 import FDPCalendar from "./FDPCalendar";
 import * as FairOS from "./FairOS.js";
+import { useCallback } from "react";
 
 //import { FdpStorage } from "@fairdatasociety/fdp-storage";
 //import { FdpStorage } from "../fdp-storage/fdp-storage.ts";
@@ -67,6 +68,7 @@ export default function FDPLogin({
    */
 
   // when account exported use this to get private key in hex for import
+  /*
   async function getPrivKeyFromSeed(mnemonic) {
     const bip = require("bip39");
     const hdkey = require("ethereumjs-wallet/hdkey");
@@ -81,7 +83,8 @@ export default function FDPLogin({
     // now you can use this private key to import account
     // console.log("private", privateKey);
   }
-
+ */
+  /*
   // this is needed for fairdrop to work
   async function getPublicKey(signer) {
     // yarn ganache-cli -p 8545 -d
@@ -106,6 +109,7 @@ export default function FDPLogin({
       console.log("error", recoveredAddress, ethAddress);
     }
   }
+*/
 
   //const tx = Transactor(userSigner);
 
@@ -114,12 +118,16 @@ export default function FDPLogin({
     setUsername(values.username);
   }
 
-  async function doLogin() {
+  //async function doLogin() {
+  const doLogin = useCallback(async () => {
     try {
-      //console.log("doLogin", username, password, user);
+      //console.log("doLogin user", user, username, password);
+      console.log("doLogin user");
       if (username === null || password === null || username === undefined || password === undefined) return;
-      var user = await (await FairOS.userLogin(FairOS.fairOShost, username, password)).json();
-      console.log("user", user);
+      var user = await FairOS.userLogin(FairOS.fairOShost, username, password);
+      //console.log("user", user);
+      user = await user.json();
+      //console.log("user", user);
 
       user.username = username;
       user.password = password; // we will need this later
@@ -141,13 +149,18 @@ export default function FDPLogin({
         });
       }
     } catch (error) {
-      console.error(error);
+      console.error(error, user);
+      /*var user = {};
+      user.username = null;
+      user.password = null; // we will need this later
+      setUser(user);*/
       notification.error({
-        message: "Error",
+        message: "Error login",
         description: `Error: ${error.message}`,
       });
     }
-  }
+  });
+
   useEffect(() => {
     doLogin();
   }, [username, password]);

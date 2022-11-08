@@ -179,7 +179,7 @@ class FDPAgenda extends Component {
       });
     } catch (err) {
       notification.error({
-        message: "Error",
+        message: "Error loading from storage",
         description: err.message,
       });
     }
@@ -205,7 +205,7 @@ class FDPAgenda extends Component {
     } catch (err) {
       console.error(err);
       notification.error({
-        message: "Error",
+        message: "Error uploading to storage",
         description: err.message,
       });
     }

@@ -397,7 +397,7 @@ class FDPCalendar extends Component {
       });
     } catch (err) {
       notification.error({
-        message: "Error",
+        message: "Error downloading events",
         description: err.message,
       });
     }
@@ -423,7 +423,7 @@ class FDPCalendar extends Component {
     } catch (err) {
       console.error(err);
       notification.error({
-        message: "Error",
+        message: "Error uploading events",
         description: err.message,
       });
     }
