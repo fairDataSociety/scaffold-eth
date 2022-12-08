@@ -251,7 +251,7 @@ function App(props) {
   const [schedule, setSchedule] = useState({ schedule: { version: "0.0" } });
   const [agenda, setAgenda] = useState({ startDate: "2023-12-08", events: [] });
   const [events, setEvents] = useState({ events: [] });
-  const [pods, setPods] = useState({ pod_name: [] });
+  const [pods, setPods] = useState([]);
   const [files, setFiles] = useState({ files: [] });
   const [pod, setPod] = useState("");
   const [dir, setDir] = useState("/");
@@ -325,23 +325,6 @@ function App(props) {
             </Menu.Item>
           </>
         )}
-
-        {/* <Menu.Item key="/debug">
-          <Link to="/debug">Debug Contracts</Link>
-        </Menu.Item>
-        <Menu.Item key="/hints">
-          <Link to="/hints">Hints</Link>
-        </Menu.Item>
-        <Menu.Item key="/exampleui">
-          <Link to="/exampleui">ExampleUI</Link>
-        </Menu.Item>
-        <Menu.Item key="/mainnetdai">
-          <Link to="/mainnetdai">Mainnet DAI</Link>
-        </Menu.Item> 
-        <Menu.Item key="/subgraph">
-          <Link to="/subgraph">Subgraph</Link>
-        </Menu.Item> 
-        */}
       </Menu>
 
       <Switch>

@@ -1,3 +1,28 @@
+# This repo contains agenda.dev.fairdatasociety.org
+
+if you have trouble building and getting error in node 18: 
+```
+Error: error:0308010C:digital envelope routines::unsupported
+```
+
+try running in
+Linux and macOS (Windows Git Bash)-
+```
+export NODE_OPTIONS=--openssl-legacy-provider
+```
+
+Windows command prompt-
+```
+set NODE_OPTIONS=--openssl-legacy-provider
+```
+
+Windows PowerShell-
+```
+$env:NODE_OPTIONS = "--openssl-legacy-provider"
+```
+
+Reference https://github.com/webpack/webpack/issues/14532#issuecomment-947012063.
+
 # 🏗 Scaffold-ETH
 
 > everything you need to build on Ethereum! 🚀

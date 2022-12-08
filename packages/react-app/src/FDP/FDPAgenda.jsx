@@ -194,13 +194,13 @@ class FDPAgenda extends Component {
       description: "Please wait ...",
     });
     try {
-      var res = await FairOS.uploadObjectAsFile(FairOS.fairOShost, "agenda", "/", "events.0.json", eventsObject);
+      var res = await FairOS.uploadObjectAsFile(FairOS.fairOShost, "agenda", "/", "events.0.json", eventsObject, true);
       var response = await res.json();
       console.log("uploaded events file", response);
       //this.calendar.update({ startDate: this.state.startDate, columns, events: json.events });
       notification.success({
         message: response.Responses[0].message,
-        description: "Stored as " + response.Responses[0].file_name,
+        description: "Stored as " + response.Responses[0].fileName,
       });
     } catch (err) {
       console.error(err);

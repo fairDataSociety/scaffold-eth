@@ -12,7 +12,7 @@ export const fairOShost =
 
 export async function userLogin(host, user, pass) {
   var data = {
-    user_name: user,
+    userName: user,
     password: pass,
   };
   return await fetch(host + "v2/user/login", {
@@ -29,7 +29,7 @@ export async function userLogin(host, user, pass) {
 
 export async function userLoggedIn(host, username) {
   var data = {
-    user_name: username,
+    userName: username,
   };
   return await fetch(host + "v1/user/isloggedin" + "?" + new URLSearchParams(data), {
     method: "GET",
@@ -42,7 +42,7 @@ export async function userLoggedIn(host, username) {
 
 export async function podLs(host, password) {
   var data = {
-    pod_name: "",
+    podName: "",
     password: password,
   };
   return fetch(host + "v1/pod/ls" + "?" + new URLSearchParams(data), {
@@ -56,8 +56,8 @@ export async function podLs(host, password) {
 
 export async function dirLs(host, podName, dirpath) {
   var data = {
-    pod_name: podName,
-    dir_path: dirpath, // "/"
+    podName: podName,
+    dirPath: dirpath, // "/"
   };
   return fetch(host + "v1/dir/ls" + "?" + new URLSearchParams(data), {
     method: "GET",
@@ -70,7 +70,7 @@ export async function dirLs(host, podName, dirpath) {
 
 export async function podOpen(host, podName, password) {
   var data = {
-    pod_name: podName,
+    podName: podName,
     password: password,
   };
   return fetch(host + "v1/pod/open" + "?" + new URLSearchParams(data), {
@@ -85,7 +85,7 @@ export async function podOpen(host, podName, password) {
 
 export async function podDelete(host, podName, password) {
   var data = {
-    pod_name: podName,
+    podName: podName,
     password: password,
   };
   return fetch(host + "v1/pod/delete" + "?" + new URLSearchParams(data), {
@@ -100,7 +100,7 @@ export async function podDelete(host, podName, password) {
 
 export async function podNew(host, podName, password) {
   var data = {
-    pod_name: podName,
+    podName: podName,
     password: password,
   };
   var res = await fetch(host + "v1/pod/new", {
@@ -118,8 +118,8 @@ export async function podNew(host, podName, password) {
 
 export async function downloadFile(host, podName, dirPath, filename) {
   var data = {
-    file_path: dirPath + filename, // "/index.json"
-    pod_name: podName,
+    filePath: dirPath + filename, // "/index.json"
+    podName: podName,
   };
 
   return await fetch(host + "v1/file/download" + "?" + new URLSearchParams(data), {
@@ -133,7 +133,7 @@ export async function downloadFile(host, podName, dirPath, filename) {
   });
 }
 
-export async function uploadObjectAsFile(host, podName, dirPath, filename, object) {
+export async function uploadObjectAsFile(host, podName, dirPath, filename, object, overwrite = false) {
   const formData = new FormData();
 
   const stringify = JSON.stringify(object);
@@ -141,10 +141,12 @@ export async function uploadObjectAsFile(host, podName, dirPath, filename, objec
   const file = new File([blob], filename);
 
   formData.append("files", file);
-  formData.set("pod_name", podName);
-  formData.append("file_name", filename); //"index.json");
-  formData.set("dir_path", dirPath); // "/");
-  formData.set("block_size", "1Mb");
+  formData.set("podName", podName);
+  formData.append("fileName", filename); //"index.json");
+  formData.set("dirPath", dirPath); // "/");
+  formData.set("blockSize", "1Mb");
+
+  if (overwrite === true) formData.set("overwrite", "true");
 
   return await fetch(host + "v1/file/upload", {
     method: "POST",

@@ -133,10 +133,10 @@ export default function FDPLogin({
       user.password = password; // we will need this later
       setUser(user);
 
-      if (user.public_key) {
+      if (user.publicKey) {
         notification.success({
           message: user.message,
-          description: ``,
+          description: `User pubKey: ${user.publicKey}`,
         });
 
         await setLogin(true);
@@ -145,7 +145,7 @@ export default function FDPLogin({
       } else {
         notification.error({
           message: user.message,
-          description: `xxx`,
+          description: `Unknown error`,
         });
       }
     } catch (error) {
@@ -202,13 +202,13 @@ export default function FDPLogin({
     }); */
   }
 
-  async function uploadFile(podName, dirPath, filename, object) {
+  async function uploadFile(podName, dirPath, filename, object, overwrite) {
     notification.info({
       message: "uploading...",
       description: podName + " " + dirPath + " " + filename,
     });
 
-    var res = await FairOS.uploadObjectAsFile(FairOS.fairOShost, podName, dirPath, filename, object);
+    var res = await FairOS.uploadObjectAsFile(FairOS.fairOShost, podName, dirPath, filename, object, overwrite);
     var response = await res.json();
 
     try {
@@ -237,20 +237,22 @@ export default function FDPLogin({
   const delay = ms => new Promise(res => setTimeout(res, ms));
 
   async function fetchPods() {
-    // notification.info({
-    //   message: "Getting pods",
-    //   description: "please wait",
-    // });
+    notification.info({
+      message: "Getting pods",
+      description: "please wait",
+    });
+
     var pass = user === null ? password : user.password;
 
     var podls = await (await FairOS.podLs(FairOS.fairOShost, pass)).json();
-    console.log("pods", podls);
-    var hasPod = podls.pod_name.find(str => str === PODNAME);
+    console.log("pods", podls, podls.pods);
+    var hasPod = podls.pods.find(str => str === PODNAME);
+
     if (hasPod === undefined) {
       //await FairOS.podNew(FairOS.fairOShost, PODNAME, user.password);
       //await delay(30000); // wait 10s
       //podls = await (await FairOS.podLs(FairOS.fairOShost, user.password)).json();
-      //hasPod = podls.pod_name.find(str => str === PODNAME); // retry to get, not best solution but avoids endless loop
+      //hasPod = podls.podName.find(str => str === PODNAME); // retry to get, not best solution but avoids endless loop
       //await fetchPods();
       //return;
       notification.info({
@@ -258,14 +260,14 @@ export default function FDPLogin({
         description: "does not exist, create it",
       });
       setPodExists(null);
-      setPods(podls);
+      setPods(podls.pods);
       return;
     }
 
-    setPods(podls);
+    setPods(podls.pods);
     notification.success({
       message: "got pods",
-      description: podls.pod_name.length + " pods fetched",
+      description: podls.pods.length + " pods fetched",
     });
 
     await setPodExists(hasPod);
@@ -313,6 +315,7 @@ export default function FDPLogin({
     });
 
     var res = await (await FairOS.dirLs(FairOS.fairOShost, podName, dirpath)).json();
+    //debugger;
     console.log("dirLs", res);
     if (res.message === "ls: pod not open") {
       await fetchOpenPod(podName);
@@ -383,13 +386,14 @@ export default function FDPLogin({
   } catch (error) {
     console.error(error);
   }
-  if (loggedIn === true && user != null /*&& pods !== undefined*/) {
+
+  if (loggedIn === true && user != null && pods !== undefined) {
     return (
       <div>
         <div style={{ display: "flex", margin: "20px" }}>
           <div style={{ textAlign: "left", width: "20%" }}>
             <h2>Pods {isBusy && <Spin size="small" />}</h2>
-            {pods.pod_name.map(p => (
+            {pods.map(p => (
               <span key={p}>
                 <span style={{ cursor: "pointer" }}>
                   {pod === p ? (
@@ -457,7 +461,7 @@ export default function FDPLogin({
                       />,
                     ]}
                   >
-                    {new Date(f.creation_time * 1000).toISOString()}
+                    {/* {new Date(f.creation_time * 1000).toISOString()} */}
                     <Card.Meta title={f.name} description={f.content_type} />
                   </Card>
                   // <Card>
@@ -469,12 +473,14 @@ export default function FDPLogin({
               {isBusy && <Spin size="large" />}
             </Row>
             <Row>{numItems} Items</Row>
-            <span
-              onClick={async () => await uploadFile(pod, dir, "events.0.json", { events: [] })}
+
+            <br />
+            <Button
+              onClick={async () => await uploadFile(pod, dir, "events.0.json", { events: [] }, false)}
               style={{ cursor: "pointer" }}
             >
-              Events 0
-            </span>
+              Create New Events File
+            </Button>
           </div>
         </div>
       </div>
