@@ -88,7 +88,7 @@
     }
   },
   "scripts": {
-    "build": "react-scripts build",
+    "build": "export NODE_OPTIONS=--openssl-legacy-provider && react-scripts build",
     "eject": "react-scripts eject",
     "prestart": "node ./scripts/create_contracts.js",
     "start": "react-scripts start",
