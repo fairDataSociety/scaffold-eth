@@ -34,6 +34,7 @@ import { useStaticJsonRPC } from "./hooks";
 import FDPLogin from "./FDP/FDPLogin";
 import FDPCalendar from "./FDP/FDPCalendar";
 import FDPAgenda from "./FDP/FDPAgenda";
+import SDMInput from "./smart-data/SDMInput";
 
 const { ethers } = require("ethers");
 /*
@@ -329,26 +330,29 @@ function App(props) {
 
       <Switch>
         <Route exact path="/">
-          {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <FDPLogin
-            address={address}
-            userSigner={userSigner}
-            setLogin={setIsLoggedIn}
-            setUser={setUserData}
-            user={userData}
-            loggedIn={isLoggedIn}
-            pods={pods}
-            setPods={setPods}
-            files={files}
-            setFiles={setFiles}
-            pod={pod}
-            setPod={setPod}
-            dir={dir}
-            setDir={setDir}
-            setEvents={setEvents}
-          />
+          <>
+            <SDMInput />
+            {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
+            <FDPLogin
+              address={address}
+              userSigner={userSigner}
+              setLogin={setIsLoggedIn}
+              setUser={setUserData}
+              user={userData}
+              loggedIn={isLoggedIn}
+              pods={pods}
+              setPods={setPods}
+              files={files}
+              setFiles={setFiles}
+              pod={pod}
+              setPod={setPod}
+              dir={dir}
+              setDir={setDir}
+              setEvents={setEvents}
+            />
 
-          {/* <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} /> */}
+            {/* <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} /> */}
+          </>
         </Route>
         {isLoggedIn === true && (
           <>
